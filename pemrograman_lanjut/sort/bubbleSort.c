@@ -159,6 +159,81 @@ void salinData(dataMhs sumber[], dataMhs tujuan[], int jumlahMhs)
     }
 }
 
+int sequentialSearch(dataMhs Mhs[], int jumlahMhs, int pilihan, void *key)
+{
+    for (int i = 0; i < jumlahMhs; i++)
+    {
+        /* code */
+        int compare = 0;
+        switch (pilihan)
+        {
+        case 1:
+            compare = (*(long long int *)key == Mhs[i].npm);
+            break;
+        case 2:
+            compare = strcmp((char *)key, Mhs[i].nama) == 0;
+            break;
+        case 3:
+            compare = strcmp((char *)key, Mhs[i].prodi) == 0;
+            break;
+        case 4:
+            compare = (*(float *)key == Mhs[i].ipk);
+            break;
+        default:
+            break;
+        }
+        if (compare)
+        {
+            /* code */
+            return i;
+        }
+    }
+    return -1;
+}
+
+int binarySearch(dataMhs Mhs[], int jumlahMhs, int pilihan, void *key)
+{
+    int low = 0, high = jumlahMhs - 1, mid, compare;
+
+    while (low < high)
+    {
+        /* code */
+        mid = low + (high - low) / 2;
+
+        switch (pilihan)
+        {
+        case 1:
+            compare = (*(long long int *)key > Mhs[mid].npm) - (*(long long int *)key < Mhs[mid].npm);
+            break;
+        case 2:
+            compare = strcmp((char *)key, Mhs[mid].nama);
+            break;
+        case 3:
+            compare = strcmp((char *)key, Mhs[mid].prodi);
+            break;
+        case 4:
+            compare = (*(float *)key > Mhs[mid].ipk) - (*(float *)key < Mhs[mid].ipk);
+            break;
+        default:
+            break;
+        }
+        if (compare == 0)
+        {
+            /* code */
+            return mid;
+        }
+        else if (compare < 0)
+        {
+            high = mid - 1;
+        }
+        else
+        {
+            low = mid + 1;
+        }
+    }
+    return -1;
+}
+
 int main()
 {
     dataMhs Mhs[MAX_MAHASISWA];
@@ -173,7 +248,8 @@ int main()
         printf("1. Input Data Mahasiswa\n");
         printf("2. Tampilkan Sorting Data Mahasiswa\n");
         printf("3. Tampilkan Seluruh Data Mahasiswa\n");
-        printf("4. Keluar\n");
+        printf("4. Search Data Mahasiswa\n");
+        printf("5. Keluar\n");
         printf("---------------------------------------\n");
         printf("Pilihan anda: ");
         scanf("%d", &pilihan);
@@ -230,10 +306,10 @@ int main()
 
             int pilihanSort, pilihanAsc, metodeSort;
 
-            printf("Pilih kategori untuk sorting: ");
+            printf("1. NPM\n2. Nama\n3. Jurusan\n4. IPK\nPilih kategori untuk sorting: ");
             scanf("%d", &pilihanSort);
 
-            printf("Pilih urutan: ");
+            printf("1. Ascending\n2. Descending\nPilih Urutan: ");
             scanf("%d", &pilihanAsc);
 
             printf("1. Bubble Sort\n2. Insertion Sort\n3. Selection Sort\nPilih metode sorting: ");
@@ -247,7 +323,74 @@ int main()
             tampilkanData(Mhs, jumlahMhs);
             break;
         case 4:
+            if (jumlahMhs == 0)
+            {
+                /* code */
+                printf("Data Mahasiswa Kosong!");
+                break;
+            }
+
+            int pilihanSearch, metodeSearch;
+            printf("1. NPM\n2. Nama\n3. Jurusan\n4. IPK\nPilih Kategori untuk pencarian:");
+            scanf("%d", &pilihanSearch);
+
+            printf("1. Sequential\n2. Binary\nPilih Metode untuk pencarian:");
+            scanf("%d", &metodeSearch);
+
+            dataMhs salinanMhs[MAX_MAHASISWA];
+            salinData(Mhs, salinanMhs, jumlahMhs);
+
+            int foundIndex = -1;
+            if (metodeSearch == 2)
+            {
+                sortData(salinanMhs, jumlahMhs, pilihanSearch, 1, 1);
+            }
+
+            switch (pilihanSearch)
+            {
+            case 1:
+                printf("Masukkan NPM: ");
+                long long int npmKey;
+                scanf("%lld", &npmKey);
+                foundIndex = (metodeSearch == 1) ? sequentialSearch(salinanMhs, jumlahMhs, pilihanSearch, &npmKey) : binarySearch(salinanMhs, jumlahMhs, pilihanSearch, &npmKey);
+                break;
+            case 2:
+                printf("Masukkan Nama: ");
+                char namaKey[100];
+                scanf("%[^\n]s", &namaKey);
+                foundIndex = (metodeSearch == 1) ? sequentialSearch(salinanMhs, jumlahMhs, pilihanSearch, &namaKey) : binarySearch(salinanMhs, jumlahMhs, pilihanSearch, &namaKey);
+                break;
+            case 3:
+                printf("Masukkan Jurusan: ");
+                char jurusanKey[100];
+                scanf("%[^\n]s", &jurusanKey);
+                foundIndex = (metodeSearch == 1) ? sequentialSearch(salinanMhs, jumlahMhs, pilihanSearch, &jurusanKey) : binarySearch(salinanMhs, jumlahMhs, pilihanSearch, &namaKey);
+                break;
+            case 4:
+                printf("Masukkan IPK: ");
+                float ipkKey;
+                scanf("%f", &ipkKey);
+                foundIndex = (metodeSearch == 1) ? sequentialSearch(salinanMhs, jumlahMhs, pilihanSearch, &ipkKey) : binarySearch(salinanMhs, jumlahMhs, pilihanSearch, &ipkKey);
+                break;
+
+            default:
+                break;
+            }
+
+            if (foundIndex != -1)
+            {
+                /* code */
+                printf("Data Ditemukan: \n");
+                tampilkanData(&salinanMhs[foundIndex], 1);
+            }
+            else
+            {
+                printf("Data tidak ditemukan\n");
+            }
+            break;
+        case 5:
             return 0;
         }
     }
+    return 0;
 }
