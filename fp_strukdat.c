@@ -222,7 +222,7 @@ AVLNode *leftRotate(AVLNode *x)
 // Menyisipkan node baru ke dalam AVL Tree
 AVLNode *insertAVL(AVLNode *node, int noPenumpang, char *namaPenumpang)
 {
-    // 1. Melakukan penyisipan BST normal
+    // Melakukan penyisipan BST normal
     if (node == NULL)
         return newAVLNode(noPenumpang, namaPenumpang);
 
@@ -233,13 +233,13 @@ AVLNode *insertAVL(AVLNode *node, int noPenumpang, char *namaPenumpang)
     else // Nilai sama tidak diperbolehkan dalam BST
         return node;
 
-    // 2. Update tinggi node
+    // Update tinggi node
     node->height = 1 + max(getHeight(node->left), getHeight(node->right));
 
-    // 3. Dapatkan faktor keseimbangan
+    // Dapatkan faktor keseimbangan
     int balance = getBalance(node);
 
-    // 4. Jika node tidak seimbang, ada 4 kasus
+    // Jika node tidak seimbang, ada 4 kasus
 
     // Kasus Left Left
     if (balance > 1 && noPenumpang < node->left->noPenumpang)
@@ -395,8 +395,7 @@ void inorderAVL(AVLNode *root)
     if (root != NULL)
     {
         inorderAVL(root->left);
-        printf("No: %d, Nama: %s (Tinggi: %d)\n",
-               root->noPenumpang, root->namaPenumpang, root->height);
+        printf("No: %d, Nama: %s (Tinggi: %d)\n", root->noPenumpang, root->namaPenumpang, root->height);
         inorderAVL(root->right);
     }
 }
@@ -423,10 +422,7 @@ int main()
         printf("3. Lihat Antrian Penumpang\n");
         printf("4. Lihat Penumpang yang Sudah Naik Bus\n");
         printf("5. Cari Penumpang dalam Queue\n");
-        printf("6. Cari Penumpang dalam BST\n");
-        printf("7. Cari Penumpang dalam AVL Tree\n");
-        printf("8. Tampilkan BST (Inorder)\n");
-        printf("9. Tampilkan AVL Tree (Inorder)\n");
+        printf("6. Tampilkan Tree (Inorder)\n");
         printf("0. Keluar\n");
         printf("Pilihan: ");
         scanf("%d", &pilihan);
@@ -474,48 +470,77 @@ int main()
 
         case 5:
         {
-            int noPenumpang;
-            printf("\nMasukkan nomor penumpang yang dicari: ");
+            int noPenumpang, kategoriPencarian;
+            printf("\n==============================\n");
+            printf("\nKategori Pencarian\n");
+            printf("\n==============================\n");
+            printf("\n1. Sequential Search\n2. Binary Search Tree\n3. AVL Tree");
+            printf("\nMasukkan nomor kategori pencarian: ");
+            scanf("%d", &kategoriPencarian);
             scanf("%d", &noPenumpang);
-            cariPenumpang(&antrian, noPenumpang);
+
+            switch (kategoriPencarian)
+            {
+            case 1:
+                printf("\nMasukkan nomor penumpang");
+                scanf("%d", &noPenumpang);
+                cariPenumpang(&antrian, noPenumpang);
+                break;
+            case 2:
+                printf("\nMasukkan nomor penumpang");
+                scanf("%d", &noPenumpang);
+                cariPenumpangBST(bstRoot, noPenumpang);
+                break;
+            case 3:
+                printf("\nMasukkan nomor penumpang");
+                scanf("%d", &noPenumpang);
+                cariPenumpangAVL(avlRoot, noPenumpang);
+                break;
+
+            default:
+                break;
+            }
+
             break;
         }
 
         case 6:
         {
-            int noPenumpang;
-            printf("\nMasukkan nomor penumpang yang dicari: ");
-            scanf("%d", &noPenumpang);
-            cariPenumpangBST(bstRoot, noPenumpang);
-            break;
-        }
+            int kategoriTrees;
+            printf("\n==============================\n");
+            printf("\nKategori Trees\n");
+            printf("\n==============================\n");
+            printf("\n1. Binary Search Tree\n2. AVL Tree\n");
+            printf("\nMasukkan nomor kategori pencarian: ");
+            scanf("%d", &kategoriTrees);
 
-        case 7:
-        {
-            int noPenumpang;
-            printf("\nMasukkan nomor penumpang yang dicari: ");
-            scanf("%d", &noPenumpang);
-            cariPenumpangAVL(avlRoot, noPenumpang);
-            break;
-        }
+            switch (kategoriTrees)
+            {
+            case 1:
+                printf("\nInorder traversal BST:\n");
+                if (bstRoot == NULL)
+                {
+                    printf("BST kosong.\n");
+                }
+                else
+                {
+                    inorderBST(bstRoot);
+                }
+                break;
+            case 2:
+                printf("\nInorder traversal AVL Tree:\n");
+                if (avlRoot == NULL)
+                {
+                    printf("AVL Tree kosong.\n");
+                }
+                else
+                {
+                    inorderAVL(avlRoot);
+                }
+            default:
+                break;
+            }
 
-        case 8:
-        {
-            printf("\nInorder traversal BST:\n");
-            if (bstRoot == NULL)
-                printf("BST kosong.\n");
-            else
-                inorderBST(bstRoot);
-            break;
-        }
-
-        case 9:
-        {
-            printf("\nInorder traversal AVL Tree:\n");
-            if (avlRoot == NULL)
-                printf("AVL Tree kosong.\n");
-            else
-                inorderAVL(avlRoot);
             break;
         }
 
@@ -532,24 +557,6 @@ int main()
         }
         }
     } while (pilihan != 0);
-
-    // Membersihkan memori sebelum keluar program
-    while (!isEmpty(&antrian))
-    {
-        Node *temp = antrian.front;
-        antrian.front = antrian.front->next;
-        free(temp);
-    }
-
-    while (!isEmpty(&doneQ))
-    {
-        Node *temp = doneQ.front;
-        doneQ.front = doneQ.front->next;
-        free(temp);
-    }
-
-    // Note: In a complete implementation, we should also free the BST and AVL tree
-    // But for simplicity and since the program is ending, we'll let the OS handle it
 
     return 0;
 }
