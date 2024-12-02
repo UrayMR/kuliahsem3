@@ -187,7 +187,7 @@ BSTNode *insertBST(BSTNode *node, int noPenumpang, char *namaPenumpang)
         node->right = insertBST(node->right, noPenumpang, namaPenumpang);
     }
 
-    node->height = 1 + max(getHeightBST(node->left), getHeightBST(node->left));
+    node->height = 1 + max(getHeightBST(node->left), getHeightBST(node->right));
 
     return node;
 }
@@ -320,14 +320,19 @@ void cariPenumpangBST(BSTNode *root, int noPenumpang)
     }
 
     if (noPenumpang < root->noPenumpang)
+    {
         cariPenumpangBST(root->left, noPenumpang);
+    }
     else if (noPenumpang > root->noPenumpang)
+    {
         cariPenumpangBST(root->right, noPenumpang);
+    }
     else
     {
         printf("Penumpang ditemukan dalam BST:\n");
         printf("Nomor: %d\n", root->noPenumpang);
         printf("Nama: %s\n", root->namaPenumpang);
+        printf("Height: %d\n", root->height);
     }
 }
 
@@ -349,6 +354,7 @@ void cariPenumpangAVL(AVLNode *root, int noPenumpang)
         printf("Penumpang ditemukan dalam AVL Tree:\n");
         printf("Nomor: %d\n", root->noPenumpang);
         printf("Nama: %s\n", root->namaPenumpang);
+        printf("Height: %d\n", root->height);
     }
 }
 
@@ -413,7 +419,7 @@ void inorderAVL(AVLNode *root, char *posisi)
     if (root != NULL)
     {
         inorderAVL(root->left, "Kiri");
-        printf("No: %d, Nama: %s,Tinggi: %d, Posisi: %s\n", root->noPenumpang, root->namaPenumpang, root->height, posisi);
+        printf("No: %d, Nama: %s, Tinggi: %d, Posisi: %s\n", root->noPenumpang, root->namaPenumpang, root->height, posisi);
         inorderAVL(root->right, "Kanan");
     }
 }
@@ -440,7 +446,7 @@ int main()
         printf("3. Lihat Antrian Penumpang\n");
         printf("4. Lihat Penumpang yang Sudah Naik Bus\n");
         printf("5. Cari Penumpang dalam Queue\n");
-        printf("6. Tampilkan Tree (Inorder)\n");
+        printf("6. Tampilkan Tree Antrian (Inorder)\n");
         printf("0. Keluar\n");
         printf("Pilihan: ");
         scanf("%d", &pilihan);
