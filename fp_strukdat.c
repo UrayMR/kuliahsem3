@@ -24,6 +24,7 @@ typedef struct BSTNode
 {
     int noPenumpang;
     char namaPenumpang[50];
+    int height;
     struct BSTNode *left, *right;
 } BSTNode;
 
@@ -32,14 +33,22 @@ typedef struct AVLNode
 {
     int noPenumpang;
     char namaPenumpang[50];
-    int height; // Tinggi node untuk keseimbangan AVL
+    int height;
     struct AVLNode *left, *right;
 } AVLNode;
 
 // ================ FUNGSI UTILITAS ================
 
+// Mendapatkan tinggi node BST
+int getHeightBST(BSTNode *node)
+{
+    if (node == NULL)
+        return 0;
+    return node->height;
+}
+
 // Mendapatkan tinggi node AVL
-int getHeight(AVLNode *node)
+int getHeightAVL(AVLNode *node)
 {
     if (node == NULL)
         return 0;
@@ -57,7 +66,7 @@ int getBalance(AVLNode *node)
 {
     if (node == NULL)
         return 0;
-    return getHeight(node->left) - getHeight(node->right);
+    return getHeightAVL(node->left) - getHeightAVL(node->right);
 }
 
 // ================ FUNGSI QUEUE ================
@@ -154,6 +163,7 @@ BSTNode *newBSTNode(int noPenumpang, char *namaPenumpang)
     BSTNode *node = (BSTNode *)malloc(sizeof(BSTNode));
     node->noPenumpang = noPenumpang;
     strcpy(node->namaPenumpang, namaPenumpang);
+    node->height = 1;
     node->left = node->right = NULL;
     return node;
 }
@@ -163,13 +173,21 @@ BSTNode *insertBST(BSTNode *node, int noPenumpang, char *namaPenumpang)
 {
     // Jika pohon kosong, buat node baru
     if (node == NULL)
+    {
         return newBSTNode(noPenumpang, namaPenumpang);
+    }
 
     // Rekursif menyisipkan ke subtree yang tepat
     if (noPenumpang < node->noPenumpang)
+    {
         node->left = insertBST(node->left, noPenumpang, namaPenumpang);
+    }
     else if (noPenumpang > node->noPenumpang)
+    {
         node->right = insertBST(node->right, noPenumpang, namaPenumpang);
+    }
+
+    node->height = 1 + max(getHeightBST(node->left), getHeightBST(node->left));
 
     return node;
 }
@@ -197,8 +215,8 @@ AVLNode *rightRotate(AVLNode *y)
     y->left = T2;
 
     // Update tinggi
-    y->height = max(getHeight(y->left), getHeight(y->right)) + 1;
-    x->height = max(getHeight(x->left), getHeight(x->right)) + 1;
+    y->height = max(getHeightAVL(y->left), getHeightAVL(y->right)) + 1;
+    x->height = max(getHeightAVL(x->left), getHeightAVL(x->right)) + 1;
 
     return x;
 }
@@ -213,8 +231,8 @@ AVLNode *leftRotate(AVLNode *x)
     x->right = T2;
 
     // Update tinggi
-    x->height = max(getHeight(x->left), getHeight(x->right)) + 1;
-    y->height = max(getHeight(y->left), getHeight(y->right)) + 1;
+    x->height = max(getHeightAVL(x->left), getHeightAVL(x->right)) + 1;
+    y->height = max(getHeightAVL(y->left), getHeightAVL(y->right)) + 1;
 
     return y;
 }
@@ -234,7 +252,7 @@ AVLNode *insertAVL(AVLNode *node, int noPenumpang, char *namaPenumpang)
         return node;
 
     // Update tinggi node
-    node->height = 1 + max(getHeight(node->left), getHeight(node->right));
+    node->height = 1 + max(getHeightAVL(node->left), getHeightAVL(node->right));
 
     // Dapatkan faktor keseimbangan
     int balance = getBalance(node);
@@ -379,24 +397,24 @@ void displayPenumpangBus(Queue *doneQ)
 // ================ FUNGSI TRAVERSAL BST DAN AVL ================
 
 // Inorder traversal BST
-void inorderBST(BSTNode *root)
+void inorderBST(BSTNode *root, char *posisi)
 {
     if (root != NULL)
     {
-        inorderBST(root->left);
-        printf("No: %d, Nama: %s\n", root->noPenumpang, root->namaPenumpang);
-        inorderBST(root->right);
+        inorderBST(root->left, "Kiri");
+        printf("No: %d, Nama: %s, Height: %d, Posisi: %s\n", root->noPenumpang, root->namaPenumpang, root->height, posisi);
+        inorderBST(root->right, "Kanan");
     }
 }
 
 // Inorder traversal AVL
-void inorderAVL(AVLNode *root)
+void inorderAVL(AVLNode *root, char *posisi)
 {
     if (root != NULL)
     {
-        inorderAVL(root->left);
-        printf("No: %d, Nama: %s (Tinggi: %d)\n", root->noPenumpang, root->namaPenumpang, root->height);
-        inorderAVL(root->right);
+        inorderAVL(root->left, "Kiri");
+        printf("No: %d, Nama: %s,Tinggi: %d, Posisi: %s\n", root->noPenumpang, root->namaPenumpang, root->height, posisi);
+        inorderAVL(root->right, "Kanan");
     }
 }
 
@@ -524,7 +542,7 @@ int main()
                 }
                 else
                 {
-                    inorderBST(bstRoot);
+                    inorderBST(bstRoot, "Root");
                 }
                 break;
             case 2:
@@ -535,7 +553,7 @@ int main()
                 }
                 else
                 {
-                    inorderAVL(avlRoot);
+                    inorderAVL(avlRoot, "Root");
                 }
             default:
                 break;
