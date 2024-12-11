@@ -501,30 +501,23 @@ int main()
             printf("\n1. Sequential Search\n2. Binary Search Tree\n3. AVL Tree");
             printf("\nMasukkan nomor kategori pencarian: ");
             scanf("%d", &kategoriPencarian);
+            printf("\nMasukkan nomor penumpang: ");
             scanf("%d", &noPenumpang);
 
             switch (kategoriPencarian)
             {
             case 1:
-                printf("\nMasukkan nomor penumpang");
-                scanf("%d", &noPenumpang);
                 cariPenumpang(&antrian, noPenumpang);
                 break;
             case 2:
-                printf("\nMasukkan nomor penumpang");
-                scanf("%d", &noPenumpang);
                 cariPenumpangBST(bstRoot, noPenumpang);
                 break;
             case 3:
-                printf("\nMasukkan nomor penumpang");
-                scanf("%d", &noPenumpang);
                 cariPenumpangAVL(avlRoot, noPenumpang);
                 break;
-
             default:
                 break;
             }
-
             break;
         }
 
@@ -535,7 +528,7 @@ int main()
             printf("\nKategori Trees\n");
             printf("\n==============================\n");
             printf("\n1. Binary Search Tree\n2. AVL Tree\n");
-            printf("\nMasukkan nomor kategori pencarian: ");
+            printf("\nMasukkan nomor kategori penampilan tree: ");
             scanf("%d", &kategoriTrees);
 
             switch (kategoriTrees)
