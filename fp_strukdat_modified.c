@@ -105,7 +105,10 @@ BSTNode *insertBST(BSTNode *node, int noPenumpang, char *namaPenumpang, int idBu
 BSTNode *deleteBST(BSTNode *root, int noPenumpang, char *namaPenumpang)
 {
   if (root == NULL)
+  {
+    namaPenumpang[0] = '\0'; // Set empty string if not found
     return root;
+  }
 
   if (noPenumpang < root->noPenumpang)
     root->left = deleteBST(root->left, noPenumpang, namaPenumpang);
@@ -113,9 +116,7 @@ BSTNode *deleteBST(BSTNode *root, int noPenumpang, char *namaPenumpang)
     root->right = deleteBST(root->right, noPenumpang, namaPenumpang);
   else
   {
-
     strcpy(namaPenumpang, root->namaPenumpang);
-
     if (root->left == NULL)
     {
       BSTNode *temp = root->right;
@@ -136,6 +137,8 @@ BSTNode *deleteBST(BSTNode *root, int noPenumpang, char *namaPenumpang)
     root->noPenumpang = temp->noPenumpang;
     strcpy(root->namaPenumpang, temp->namaPenumpang);
     root->right = deleteBST(root->right, temp->noPenumpang, namaPenumpang);
+
+    strcpy(namaPenumpang, root->namaPenumpang);
   }
 
   root->height = 1 + max(getHeightBST(root->left), getHeightBST(root->right));
@@ -143,7 +146,7 @@ BSTNode *deleteBST(BSTNode *root, int noPenumpang, char *namaPenumpang)
   return root;
 }
 
-int checkPenumpangBST(AVLNode *root, int noPenumpang)
+int checkPenumpangBST(BSTNode *root, int noPenumpang)
 {
   if (root == NULL)
     return 0;
@@ -421,9 +424,9 @@ void inorderBST(BSTNode *root, char *posisi)
     {
       if (buses[i].idBus == root->idBus)
       {
-        printf("ID Bus: %d\n", root->idBus);
-        printf("Tujuan: %s\n", buses[i].tujuan);
-        printf("Waktu Keberangkatan: %s\n", buses[i].departure_time);
+        printf("ID Bus: %d, ", root->idBus);
+        printf("Tujuan: %s,", buses[i].tujuan);
+        printf("Waktu Keberangkatan: %s, ", buses[i].departure_time);
         printf("Waktu Kedatangan: %s\n", buses[i].arrival_time);
         busFound = 1;
         break;
@@ -455,9 +458,9 @@ void inorderAVL(AVLNode *root, char *posisi)
     {
       if (buses[i].idBus == root->idBus)
       {
-        printf("ID Bus: %d\n", root->idBus);
-        printf("Tujuan: %s\n", buses[i].tujuan);
-        printf("Waktu Keberangkatan: %s\n", buses[i].departure_time);
+        printf("ID Bus: %d, ", root->idBus);
+        printf("Tujuan: %s,", buses[i].tujuan);
+        printf("Waktu Keberangkatan: %s, ", buses[i].departure_time);
         printf("Waktu Kedatangan: %s\n", buses[i].arrival_time);
         busFound = 1;
         break;
@@ -529,8 +532,7 @@ void displayBus()
     {
       printf("ID Bus: %d, ", buses[i].idBus);
       printf("Tujuan Bus: %s, ", buses[i].tujuan);
-      printf("Jam Keberangkatan: %s, ", buses[i].departure_time);
-      printf("Jam Kedatangan: %s, ", buses[i].arrival_time);
+      printf("Jam Keberangkatan: %s - %s, ", buses[i].departure_time, buses[i].arrival_time);
       printf("Kapasitas Penumpang: %d / %d \n", buses[i].countPenumpang, buses[i].maxPenumpang);
     }
   }
@@ -634,7 +636,7 @@ void tambahPenumpang(BSTNode **bstRoot, AVLNode **avlRoot)
       busFound = 1;
       if (buses[i].countPenumpang >= buses[i].maxPenumpang)
       {
-        printf("Bus dengan ID %d sudah penuh.\n", idBus);
+        printf("\nBus dengan ID %d sudah penuh.\n", idBus);
         return;
       }
       buses[i].countPenumpang++;
@@ -644,7 +646,7 @@ void tambahPenumpang(BSTNode **bstRoot, AVLNode **avlRoot)
 
   if (!busFound)
   {
-    printf("Bus dengan ID %d tidak ditemukan.\n", idBus);
+    printf("\nBus dengan ID %d tidak ditemukan.\n", idBus);
     return;
   }
 
@@ -655,6 +657,7 @@ void tambahPenumpang(BSTNode **bstRoot, AVLNode **avlRoot)
   {
     printf("Masukkan nomor penumpang: ");
     scanf("%d", &noPenumpang);
+    getchar();
 
     // Cek duplikasi di BST dan AVL
     if (checkPenumpangBST(*bstRoot, noPenumpang) || checkPenumpangAVL(*avlRoot, noPenumpang))
@@ -726,7 +729,7 @@ int main()
         hapusBus();
         break;
       case 5:
-        printf("Keluar dari program.\n");
+        printf("Keluar dari Bus Menu.\n");
         break;
       default:
         printf("Pilihan tidak valid.\n");
@@ -835,7 +838,7 @@ int main()
         break;
       }
       case 5:
-        printf("Keluar dari program.\n");
+        printf("Keluar dari Penumpang Menu.\n");
         break;
       default:
         printf("Pilihan tidak valid.\n");
