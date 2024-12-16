@@ -689,6 +689,7 @@ int main()
   int mainMenu, busMenu, penumpangMenu;
   while (1)
   {
+    system("cls");
     printf("\n==================================\n");
     printf("\nSistem Manajemen Bus dan Penumpang\n");
     printf("\n==================================\n");
@@ -698,10 +699,12 @@ int main()
     printf("Pilihan: ");
     scanf("%d", &mainMenu);
     getchar();
+    system("pause");
 
     switch (mainMenu)
     {
     case 1:
+      system("cls");
       printf("\n==================================\n");
       printf("\nBus Menu\n");
       printf("\n==================================\n");
@@ -713,31 +716,44 @@ int main()
       printf("Pilihan: ");
       scanf("%d", &busMenu);
       getchar();
+      system("pause");
 
       switch (busMenu)
       {
       case 1:
+        system("cls");
         tambahBus();
+        system("pause");
         break;
       case 2:
+        system("cls");
         displayBus();
+        system("pause");
         break;
       case 3:
+        system("cls");
         editBus();
+        system("pause");
         break;
       case 4:
+        system("cls");
         hapusBus();
+        system("pause");
         break;
       case 5:
+        system("cls");
         printf("Keluar dari Bus Menu.\n");
+        system("pause");
         break;
       default:
         printf("Pilihan tidak valid.\n");
+        system("pause");
         break;
       }
       break;
 
     case 2:
+      system("cls");
       printf("\n==================================\n");
       printf("\nPenumpang Menu\n");
       printf("\n==================================\n");
@@ -749,16 +765,20 @@ int main()
       printf("Pilihan: ");
       scanf("%d", &penumpangMenu);
       getchar();
+      system("pause");
 
       switch (penumpangMenu)
       {
       case 1:
       {
+        system("cls");
         tambahPenumpang(&bstRoot, &avlRoot);
+        system("pause");
         break;
       }
       case 2:
       {
+        system("cls");
         int noPenumpang, kategoriPencarian;
         printf("\nPilih metode pencarian:\n");
         printf("1. Binary Search Tree\n");
@@ -768,22 +788,30 @@ int main()
 
         printf("Masukkan nomor penumpang: ");
         scanf("%d", &noPenumpang);
+        system("pause");
 
         switch (kategoriPencarian)
         {
         case 1:
+          system("cls");
           cariPenumpangBST(bstRoot, noPenumpang);
+          system("pause");
           break;
         case 2:
+          system("cls");
           cariPenumpangAVL(avlRoot, noPenumpang);
+          system("pause");
           break;
         default:
+          system("cls");
           printf("Pilihan tidak valid\n");
+          system("pause");
         }
         break;
       }
       case 3:
       {
+        system("cls");
         int noPenumpang;
         char namaPenumpang[50] = "";
         printf("Masukkan nomor penumpang yang akan dihapus: ");
@@ -796,21 +824,25 @@ int main()
           printf("Menghapus %d - %s dalam data Penumpang\n", noPenumpang, namaPenumpang);
         else
           printf("Nomor penumpang %d tidak ditemukan.\n", noPenumpang);
+        system("pause");
 
         break;
       }
       case 4:
       {
+        system("cls");
         int kategoriTree;
         printf("\nPilih jenis tree:\n");
         printf("1. Binary Search Tree\n");
         printf("2. AVL Tree\n");
         printf("Pilihan: ");
         scanf("%d", &kategoriTree);
+        system("pause");
 
         switch (kategoriTree)
         {
         case 1:
+          system("cls");
           printf("\nInorder traversal BST:\n");
           if (bstRoot == NULL)
           {
@@ -820,8 +852,10 @@ int main()
           {
             inorderBST(bstRoot, "Root");
           }
+          system("pause");
           break;
         case 2:
+          system("cls");
           printf("\nInorder traversal AVL Tree:\n");
           if (avlRoot == NULL)
           {
@@ -831,29 +865,36 @@ int main()
           {
             inorderAVL(avlRoot, "Root");
           }
+          system("pause");
           break;
         default:
           printf("Pilihan tidak valid\n");
+          system("pause");
         }
         break;
       }
       case 5:
+        system("cls");
         printf("Keluar dari Penumpang Menu.\n");
         break;
       default:
         printf("Pilihan tidak valid.\n");
+        system("pause");
         break;
       }
       break;
 
     case 3:
+      system("cls");
       printf("Keluar dari program.\n");
+      system("pause");
       return 1;
       break;
 
     default:
+      system("cls");
       printf("Pilihan tidak valid.\n");
-      break;
+      system("pause");
     }
   }
   return 0;
