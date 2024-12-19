@@ -487,7 +487,7 @@ void tambahBus()
 
   Bus newBus;
   printf("\n==================================\n");
-  printf("\nSistem Manajemen Bus dan Penumpang\n");
+  printf("\nTambahkan Bus\n");
   printf("\n==================================\n");
   printf("Masukkan ID Bus: ");
   scanf("%d", &newBus.idBus);
@@ -547,8 +547,18 @@ void displayBus()
 
 void editBus()
 {
+  if (jumlahBus > 0)
+  {
+    displayBus();
+  }
+  else
+  {
+    printf("Tidak ada bus yang tersedia.\n");
+    return;
+  }
+
   int idBus;
-  printf("Masukkan ID Bus yang akan diedit: ");
+  printf("\nMasukkan ID Bus yang akan diedit: ");
   scanf("%d", &idBus);
   getchar();
 
@@ -592,6 +602,16 @@ void editBus()
 
 void hapusBus()
 {
+  if (jumlahBus > 0)
+  {
+    displayBus();
+  }
+  else
+  {
+    printf("Tidak ada bus yang tersedia.\n");
+    return;
+  }
+
   int idBus;
   printf("Masukkan ID Bus yang akan dihapus: ");
   scanf("%d", &idBus);
@@ -658,7 +678,7 @@ void tambahPenumpang(BSTNode **bstRoot, AVLNode **avlRoot)
 
   while (1)
   {
-    printf("Masukkan nomor penumpang: ");
+    printf("\nMasukkan nomor penumpang: ");
     scanf("%d", &noPenumpang);
     getchar();
 
@@ -781,25 +801,27 @@ int main()
       {
         system("cls");
         int noPenumpang, kategoriPencarian;
-        printf("\nPilih metode pencarian:\n");
+        printf("\n==============================\n");
+        printf("\nMencari Penumpang\n");
+        printf("\n==============================\n");
         printf("1. Binary Search Tree\n");
         printf("2. AVL Tree\n");
-        printf("Pilihan: ");
+        printf("\nPilih metode pencarian: ");
         scanf("%d", &kategoriPencarian);
-
-        printf("Masukkan nomor penumpang: ");
-        scanf("%d", &noPenumpang);
-        system("pause");
 
         switch (kategoriPencarian)
         {
         case 1:
-          system("cls");
+          printf("\nMasukkan nomor penumpang: ");
+          scanf("%d", &noPenumpang);
           cariPenumpangBST(bstRoot, noPenumpang);
+          system("pause");
           break;
         case 2:
-          system("cls");
+          printf("\nMasukkan nomor penumpang: ");
+          scanf("%d", &noPenumpang);
           cariPenumpangAVL(avlRoot, noPenumpang);
+          system("pause");
           break;
         default:
           printf("Pilihan tidak valid\n");
@@ -810,6 +832,9 @@ int main()
       case 3:
       {
         system("cls");
+        printf("\n==============================\n");
+        printf("\nMenghapus Penumpang\n");
+        printf("\n==============================\n");
         int noPenumpang;
         char namaPenumpang[50] = "";
         printf("Masukkan nomor penumpang yang akan dihapus: ");
@@ -830,10 +855,12 @@ int main()
       {
         system("cls");
         int kategoriTree;
-        printf("\nPilih jenis tree:\n");
+        printf("\n==============================\n");
+        printf("\nMenampilkan Tree\n");
+        printf("\n==============================\n");
         printf("1. Binary Search Tree\n");
         printf("2. AVL Tree\n");
-        printf("Pilihan: ");
+        printf("\nPilih jenis tree:\n");
         scanf("%d", &kategoriTree);
 
         switch (kategoriTree)
