@@ -327,28 +327,13 @@ void cariPenumpangBST(BSTNode *root, int noPenumpang)
   else
   {
     printf("Penumpang ditemukan dalam BST:\n");
-    printf("Nomor: %d\n", root->noPenumpang);
-    printf("Nama: %s\n", root->namaPenumpang);
-    printf("Height: %d\n", root->height);
 
-    int busFound = 0;
-    for (int i = 0; i < jumlahBus; i++)
-    {
-      if (buses[i].idBus == root->idBus)
-      {
-        printf("ID Bus: %d\n", root->idBus);
-        printf("Tujuan: %s\n", buses[i].tujuan);
-        printf("Waktu Keberangkatan: %s\n", buses[i].departure_time);
-        printf("Waktu Kedatangan: %s\n", buses[i].arrival_time);
-        busFound = 1;
-        break;
-      }
-    }
+    printf("========================================================================================================\n");
+    printf("| %-3s | %-20s | %-3s | %-3s | %-10s | %-20s | %-20s |\n", "No", "Nama", "Height", "Bus", "Posisi", "Tujuan", "Keberangkatan", "Kedatangan");
+    printf("|-----|----------------------|--------|-----|------------|----------------------|----------------------|\n");
 
-    if (!busFound)
-    {
-      printf("Penumpang tidak menaiki bus yang terdaftar!\n");
-    }
+    printf("| %-3d | %-20s | %-6d | %-3d | %-10s | %-20s | %-20s |\n", root->noPenumpang, root->namaPenumpang, root->height, root->idBus, "Root", buses[root->idBus].tujuan, buses[root->idBus].departure_time, buses[root->idBus].arrival_time);
+    printf("========================================================================================================\n");
   }
 }
 
@@ -368,28 +353,13 @@ void cariPenumpangAVL(AVLNode *root, int noPenumpang)
   else
   {
     printf("Penumpang ditemukan dalam AVL Tree:\n");
-    printf("Nomor: %d\n", root->noPenumpang);
-    printf("Nama: %s\n", root->namaPenumpang);
-    printf("Height: %d\n", root->height);
 
-    int busFound = 0;
-    for (int i = 0; i < jumlahBus; i++)
-    {
-      if (buses[i].idBus == root->idBus)
-      {
-        printf("ID Bus: %d\n", root->idBus);
-        printf("Tujuan: %s\n", buses[i].tujuan);
-        printf("Waktu Keberangkatan: %s\n", buses[i].departure_time);
-        printf("Waktu Kedatangan: %s\n", buses[i].arrival_time);
-        busFound = 1;
-        break;
-      }
-    }
+    printf("========================================================================================================\n");
+    printf("| %-3s | %-20s | %-3s | %-3s | %-10s | %-20s | %-20s |\n", "No", "Nama", "Height", "Bus", "Posisi", "Tujuan", "Keberangkatan", "Kedatangan");
+    printf("|-----|----------------------|--------|-----|------------|----------------------|----------------------|\n");
 
-    if (!busFound)
-    {
-      printf("Penumpang tidak menaiki bus yang terdaftar!\n");
-    }
+    printf("| %-3d | %-20s | %-6d | %-3d | %-10s | %-20s | %-20s |\n", root->noPenumpang, root->namaPenumpang, root->height, root->idBus, "Root", buses[root->idBus].tujuan, buses[root->idBus].departure_time, buses[root->idBus].arrival_time);
+    printf("========================================================================================================\n");
   }
 }
 
@@ -487,7 +457,7 @@ void displayBus()
   if (jumlahBus > 0)
   {
     printf("\n========================================================================================");
-    printf("\n-----------------------------Data Bus yang tersedia-------------------------------------\n");
+    printf("\n-------------------------------Data Bus yang tersedia-----------------------------------\n");
     printf("========================================================================================\n");
     printf("| %-3s | %-20s | %-20s | %-20s | %-3s |\n", "ID", "Tujuan", "Keberangkatan", "Kedatangan", "Penumpang");
     printf("|-----|----------------------|----------------------|----------------------|-----------|\n");
