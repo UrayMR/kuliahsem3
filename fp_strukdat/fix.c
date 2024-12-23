@@ -45,7 +45,7 @@ int jumlahBus = 0;
 int getHeightBST(BSTNode *node)
 {
   if (node == NULL)
-    return 0;
+    return -1;
   return node->height;
 }
 
@@ -53,7 +53,7 @@ int getHeightBST(BSTNode *node)
 int getHeightAVL(AVLNode *node)
 {
   if (node == NULL)
-    return 0;
+    return -1;
   return node->height;
 }
 
@@ -67,7 +67,7 @@ int max(int a, int b)
 int getBalance(AVLNode *node)
 {
   if (node == NULL)
-    return 0;
+    return -1;
   return getHeightAVL(node->left) - getHeightAVL(node->right);
 }
 
@@ -80,7 +80,7 @@ BSTNode *newBSTNode(int noPenumpang, char *namaPenumpang, int idBus)
   node->noPenumpang = noPenumpang;
   strcpy(node->namaPenumpang, namaPenumpang);
   node->idBus = idBus;
-  node->height = 1;
+  node->height = 0;
   node->left = node->right = NULL;
   return node;
 }
@@ -168,7 +168,7 @@ AVLNode *newAVLNode(int noPenumpang, char *namaPenumpang, int idBus)
   node->noPenumpang = noPenumpang;
   strcpy(node->namaPenumpang, namaPenumpang);
   node->idBus = idBus;
-  node->height = 1;
+  node->height = 0;
   node->left = node->right = NULL;
   return node;
 }
@@ -414,30 +414,9 @@ void inorderBST(BSTNode *root, char *posisi)
   if (root != NULL)
   {
     inorderBST(root->left, "Kiri");
-    printf("Nomor: %d, ", root->noPenumpang);
-    printf("Nama: %s, ", root->namaPenumpang);
-    printf("Height: %d, ", root->height);
-    printf("Posisi: %s, ", posisi);
-
-    int busFound = 0;
-    for (int i = 0; i < jumlahBus; i++)
-    {
-      if (buses[i].idBus == root->idBus)
-      {
-        printf("ID Bus: %d, ", root->idBus);
-        printf("Tujuan: %s,", buses[i].tujuan);
-        printf("Waktu Keberangkatan: %s, ", buses[i].departure_time);
-        printf("Waktu Kedatangan: %s\n", buses[i].arrival_time);
-        busFound = 1;
-        break;
-      }
-    }
-
-    if (!busFound)
-    {
-      printf("Penumpang tidak menaiki bus yang terdaftar!\n");
-    }
-
+    printf("| %-3d | %-20s | %-6d | %-3d | %-10s | %-20s | %-20s |\n",
+           root->noPenumpang, root->namaPenumpang, root->height, root->idBus, posisi,
+           buses[root->idBus].tujuan, buses[root->idBus].departure_time, buses[root->idBus].arrival_time);
     inorderBST(root->right, "Kanan");
   }
 }
@@ -448,30 +427,9 @@ void inorderAVL(AVLNode *root, char *posisi)
   if (root != NULL)
   {
     inorderAVL(root->left, "Kiri");
-    printf("Nomor: %d, ", root->noPenumpang);
-    printf("Nama: %s, ", root->namaPenumpang);
-    printf("Height: %d, ", root->height);
-    printf("Posisi: %s, ", posisi);
-
-    int busFound = 0;
-    for (int i = 0; i < jumlahBus; i++)
-    {
-      if (buses[i].idBus == root->idBus)
-      {
-        printf("ID Bus: %d, ", root->idBus);
-        printf("Tujuan: %s,", buses[i].tujuan);
-        printf("Waktu Keberangkatan: %s, ", buses[i].departure_time);
-        printf("Waktu Kedatangan: %s\n", buses[i].arrival_time);
-        busFound = 1;
-        break;
-      }
-    }
-
-    if (!busFound)
-    {
-      printf("Penumpang tidak menaiki bus yang terdaftar!\n");
-    }
-
+    printf("| %-3d | %-20s | %-6d | %-3d | %-10s | %-20s | %-20s |\n",
+           root->noPenumpang, root->namaPenumpang, root->height, root->idBus, posisi,
+           buses[root->idBus].tujuan, buses[root->idBus].departure_time, buses[root->idBus].arrival_time);
     inorderAVL(root->right, "Kanan");
   }
 }
@@ -528,15 +486,16 @@ void displayBus()
 {
   if (jumlahBus > 0)
   {
-    printf("\n==============================\n");
-    printf("\nData Bus yang tersedia\n");
-    printf("\n==============================\n");
+    printf("\n========================================================================================");
+    printf("\n-----------------------------Data Bus yang tersedia-------------------------------------\n");
+    printf("========================================================================================\n");
+    printf("| %-3s | %-20s | %-20s | %-20s | %-3s |\n", "ID", "Tujuan", "Keberangkatan", "Kedatangan", "Penumpang");
+    printf("|-----|----------------------|----------------------|----------------------|-----------|\n");
     for (int i = 0; i < jumlahBus; i++)
     {
-      printf("ID Bus: %d, ", buses[i].idBus);
-      printf("Tujuan Bus: %s, ", buses[i].tujuan);
-      printf("Jam Keberangkatan: %s - %s, ", buses[i].departure_time, buses[i].arrival_time);
-      printf("Kapasitas Penumpang: %d / %d \n", buses[i].countPenumpang, buses[i].maxPenumpang);
+      printf("| %-3d | %-20s | %-20s | %-20s | %-3d / %-3d |\n",
+             buses[i].idBus, buses[i].tujuan, buses[i].departure_time, buses[i].arrival_time,
+             buses[i].countPenumpang, buses[i].maxPenumpang);
     }
   }
   else
@@ -737,7 +696,6 @@ void loadBusCSV()
 
   jumlahBus = 0; // Reset jumlah bus
 
-  // Baca langsung menggunakan fscanf
   while (jumlahBus < MAX_BUS && fscanf(file, "%d,%[^,],%[^,],%[^,],%d,%d\n",
                                        &buses[jumlahBus].idBus,
                                        buses[jumlahBus].tujuan,
@@ -752,35 +710,20 @@ void loadBusCSV()
   fclose(file);
 }
 
-void helperBST(BSTNode *root, FILE *file)
+void helperSave(BSTNode *root, FILE *file)
 {
   if (root != NULL)
   {
-    helperBST(root->left, file);
+    helperSave(root->left, file);
     fprintf(file, "%d,%s,%d\n",
             root->noPenumpang,
             root->namaPenumpang,
             root->idBus);
-    helperBST(root->right, file);
+    helperSave(root->right, file);
   }
 }
 
-void helperAVL(AVLNode *root, FILE *file)
-{
-  if (root != NULL)
-  {
-    helperAVL(root->left, file);
-    fprintf(file, "%d,%s,%d\n",
-            root->noPenumpang,
-            root->namaPenumpang,
-            root->idBus);
-    helperAVL(root->right, file);
-  }
-
-  fclose(file);
-}
-
-void savePenumpangCSV(BSTNode *bstRoot, AVLNode *avlRoot)
+void savePenumpangCSV(BSTNode *bstRoot)
 {
   FILE *file = fopen("penumpang.csv", "w");
   if (!file)
@@ -789,13 +732,7 @@ void savePenumpangCSV(BSTNode *bstRoot, AVLNode *avlRoot)
     return;
   }
 
-  // Menyimpan data BST
-  fprintf(file, "BST\n"); // Penanda untuk data BST
-  helperBST(bstRoot, file);
-
-  // Menyimpan data AVL
-  fprintf(file, "AVL\n"); // Penanda untuk data AVL
-  helperAVL(avlRoot, file);
+  helperSave(bstRoot, file);
 
   fclose(file);
 }
@@ -811,24 +748,11 @@ void loadPenumpangCSV(BSTNode **bstRoot, AVLNode **avlRoot)
 
   int noPenumpang, idBus;
   char namaPenumpang[50];
-  char buffer[10];
 
-  while (fgets(buffer, sizeof(buffer), file))
+  while (fscanf(file, "%d,%49[^,],%d\n", &noPenumpang, namaPenumpang, &idBus) != EOF)
   {
-    if (strncmp(buffer, "BST", 3) == 0)
-    {
-      while (fscanf(file, "%d,%49[^,],%d\n", &noPenumpang, namaPenumpang, &idBus) != EOF)
-      {
-        *bstRoot = insertBST(*bstRoot, noPenumpang, namaPenumpang, idBus);
-      }
-    }
-    else if (strncmp(buffer, "AVL", 3) == 0)
-    {
-      while (fscanf(file, "%d,%49[^,],%d\n", &noPenumpang, namaPenumpang, &idBus) != EOF)
-      {
-        *avlRoot = insertAVL(*avlRoot, noPenumpang, namaPenumpang, idBus);
-      }
-    }
+    *bstRoot = insertBST(*bstRoot, noPenumpang, namaPenumpang, idBus);
+    *avlRoot = insertAVL(*avlRoot, noPenumpang, namaPenumpang, idBus);
   }
 
   fclose(file);
@@ -837,11 +761,18 @@ void loadPenumpangCSV(BSTNode **bstRoot, AVLNode **avlRoot)
 // ================ PROGRAM UTAMA ================
 int main()
 {
+  system("color f0");
+  printf("Program dimulai\n");
+
   BSTNode *bstRoot = NULL;
   AVLNode *avlRoot = NULL;
 
+  printf("Memuat data bus dari CSV\n");
   loadBusCSV();
+  printf("Selesai memuat data bus dari CSV\n");
+  printf("Memuat data penumpang dari CSV\n");
   loadPenumpangCSV(&bstRoot, &avlRoot);
+  printf("Selesai memuat data penumpang dari CSV\n");
 
   int mainMenu, busMenu, penumpangMenu;
   while (1)
@@ -931,7 +862,7 @@ int main()
       {
         system("cls");
         tambahPenumpang(&bstRoot, &avlRoot);
-        savePenumpangCSV(bstRoot, avlRoot);
+        savePenumpangCSV(bstRoot);
         system("pause");
         break;
       }
@@ -980,7 +911,7 @@ int main()
 
         bstRoot = deleteBST(bstRoot, noPenumpang, namaPenumpang);
         avlRoot = deleteAVL(avlRoot, noPenumpang, namaPenumpang);
-        savePenumpangCSV(bstRoot, avlRoot);
+        savePenumpangCSV(bstRoot);
 
         if (strlen(namaPenumpang) > 0)
           printf("Menghapus %d - %s dalam data Penumpang\n", noPenumpang, namaPenumpang);
@@ -1006,7 +937,11 @@ int main()
         {
         case 1:
           system("cls");
-          printf("\nInorder traversal BST:\n");
+          printf("\n========================================================================================================");
+          printf("\n------------------------------------------In-Order Traversal BST----------------------------------------\n");
+          printf("========================================================================================================\n");
+          printf("| %-3s | %-20s | %-3s | %-3s | %-10s | %-20s | %-20s |\n", "No", "Nama", "Height", "Bus", "Posisi", "Tujuan", "Keberangkatan", "Kedatangan");
+          printf("|-----|----------------------|--------|-----|------------|----------------------|----------------------|\n");
           if (bstRoot == NULL)
           {
             printf("BST kosong.\n");
@@ -1019,7 +954,11 @@ int main()
           break;
         case 2:
           system("cls");
-          printf("\nInorder traversal AVL Tree:\n");
+          printf("\n========================================================================================================");
+          printf("\n------------------------------------------In-Order Traversal AVL----------------------------------------\n");
+          printf("========================================================================================================\n");
+          printf("| %-3s | %-20s | %-3s | %-3s | %-10s | %-20s | %-20s |\n", "No", "Nama", "Height", "Bus", "Posisi", "Tujuan", "Keberangkatan", "Kedatangan");
+          printf("|-----|----------------------|--------|-----|------------|----------------------|----------------------|\n");
           if (avlRoot == NULL)
           {
             printf("AVL Tree kosong.\n");
@@ -1049,7 +988,7 @@ int main()
 
     case 3:
       printf("Keluar dari program.\n");
-      savePenumpangCSV(bstRoot, avlRoot);
+      savePenumpangCSV(bstRoot);
       saveBusCSV();
       system("pause");
       return 1;

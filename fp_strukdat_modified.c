@@ -45,7 +45,7 @@ int jumlahBus = 0;
 int getHeightBST(BSTNode *node)
 {
   if (node == NULL)
-    return 0;
+    return -1;
   return node->height;
 }
 
@@ -53,7 +53,7 @@ int getHeightBST(BSTNode *node)
 int getHeightAVL(AVLNode *node)
 {
   if (node == NULL)
-    return 0;
+    return -1;
   return node->height;
 }
 
@@ -67,7 +67,7 @@ int max(int a, int b)
 int getBalance(AVLNode *node)
 {
   if (node == NULL)
-    return 0;
+    return -1;
   return getHeightAVL(node->left) - getHeightAVL(node->right);
 }
 
@@ -80,7 +80,7 @@ BSTNode *newBSTNode(int noPenumpang, char *namaPenumpang, int idBus)
   node->noPenumpang = noPenumpang;
   strcpy(node->namaPenumpang, namaPenumpang);
   node->idBus = idBus;
-  node->height = 1;
+  node->height = 0;
   node->left = node->right = NULL;
   return node;
 }
@@ -168,7 +168,7 @@ AVLNode *newAVLNode(int noPenumpang, char *namaPenumpang, int idBus)
   node->noPenumpang = noPenumpang;
   strcpy(node->namaPenumpang, namaPenumpang);
   node->idBus = idBus;
-  node->height = 1;
+  node->height = 0;
   node->left = node->right = NULL;
   return node;
 }
@@ -703,11 +703,116 @@ void tambahPenumpang(BSTNode **bstRoot, AVLNode **avlRoot)
   printf("Penumpang %d - %s berhasil ditambahkan ke bus %d.\n", noPenumpang, namaPenumpang, idBus);
 }
 
+// ================ FUNGSI PENYIMPANAN ================
+void saveBusCSV()
+{
+  FILE *file = fopen("bus.csv", "w");
+  if (!file)
+  {
+    printf("Error: tidak dapat membuka file!\n");
+    return;
+  }
+
+  for (int i = 0; i < jumlahBus; i++)
+  {
+    fprintf(file, "%d,%s,%s,%s,%d,%d\n",
+            buses[i].idBus,
+            buses[i].tujuan,
+            buses[i].departure_time,
+            buses[i].arrival_time,
+            buses[i].countPenumpang,
+            buses[i].maxPenumpang);
+  }
+  fclose(file);
+}
+
+void loadBusCSV()
+{
+  FILE *file = fopen("bus.csv", "r");
+  if (!file)
+  {
+    printf("Info: File bus.csv tidak ditemukan. Membuat file baru.\n");
+    return;
+  }
+
+  jumlahBus = 0; // Reset jumlah bus
+
+  while (jumlahBus < MAX_BUS && fscanf(file, "%d,%[^,],%[^,],%[^,],%d,%d\n",
+                                       &buses[jumlahBus].idBus,
+                                       buses[jumlahBus].tujuan,
+                                       buses[jumlahBus].departure_time,
+                                       buses[jumlahBus].arrival_time,
+                                       &buses[jumlahBus].countPenumpang,
+                                       &buses[jumlahBus].maxPenumpang) != EOF)
+  {
+    jumlahBus++;
+  }
+
+  fclose(file);
+}
+
+void helperSave(BSTNode *root, FILE *file)
+{
+  if (root != NULL)
+  {
+    helperSave(root->left, file);
+    fprintf(file, "%d,%s,%d\n",
+            root->noPenumpang,
+            root->namaPenumpang,
+            root->idBus);
+    helperSave(root->right, file);
+  }
+}
+
+void savePenumpangCSV(BSTNode *bstRoot)
+{
+  FILE *file = fopen("penumpang.csv", "w");
+  if (!file)
+  {
+    printf("Error: tidak dapat membuka file!\n");
+    return;
+  }
+
+  helperSave(bstRoot, file);
+
+  fclose(file);
+}
+
+void loadPenumpangCSV(BSTNode **bstRoot, AVLNode **avlRoot)
+{
+  FILE *file = fopen("penumpang.csv", "r");
+  if (!file)
+  {
+    printf("Info: File penumpang.csv tidak ditemukan. Membuat file baru.\n");
+    return;
+  }
+
+  int noPenumpang, idBus;
+  char namaPenumpang[50];
+
+  while (fscanf(file, "%d,%49[^,],%d\n", &noPenumpang, namaPenumpang, &idBus) != EOF)
+  {
+    *bstRoot = insertBST(*bstRoot, noPenumpang, namaPenumpang, idBus);
+    *avlRoot = insertAVL(*avlRoot, noPenumpang, namaPenumpang, idBus);
+  }
+
+  fclose(file);
+}
+
 // ================ PROGRAM UTAMA ================
 int main()
 {
+  printf("Program dimulai\n");
+
   BSTNode *bstRoot = NULL;
   AVLNode *avlRoot = NULL;
+
+  printf("Memuat data bus dari CSV\n");
+  loadBusCSV();
+  printf("Selesai memuat data bus dari CSV\n");
+  printf("Memuat data penumpang dari CSV\n");
+  loadPenumpangCSV(&bstRoot, &avlRoot);
+  printf("Selesai memuat data penumpang dari CSV\n");
 
   int mainMenu, busMenu, penumpangMenu;
   while (1)
@@ -745,6 +850,7 @@ int main()
       case 1:
         system("cls");
         tambahBus();
+        saveBusCSV();
         system("pause");
         break;
       case 2:
@@ -755,11 +861,13 @@ int main()
       case 3:
         system("cls");
         editBus();
+        saveBusCSV();
         system("pause");
         break;
       case 4:
         system("cls");
         hapusBus();
+        saveBusCSV();
         system("pause");
         break;
       case 5:
@@ -794,6 +902,7 @@ int main()
       {
         system("cls");
         tambahPenumpang(&bstRoot, &avlRoot);
+        savePenumpangCSV(bstRoot);
         system("pause");
         break;
       }
@@ -842,6 +951,7 @@ int main()
 
         bstRoot = deleteBST(bstRoot, noPenumpang, namaPenumpang);
         avlRoot = deleteAVL(avlRoot, noPenumpang, namaPenumpang);
+        savePenumpangCSV(bstRoot);
 
         if (strlen(namaPenumpang) > 0)
           printf("Menghapus %d - %s dalam data Penumpang\n", noPenumpang, namaPenumpang);
@@ -910,6 +1020,8 @@ int main()
 
     case 3:
       printf("Keluar dari program.\n");
+      savePenumpangCSV(bstRoot);
+      saveBusCSV();
       system("pause");
       return 1;
       break;
